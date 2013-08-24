@@ -43,9 +43,9 @@
 #include "Ext4.h"
 #include "VoldUtil.h"
 
-
 static char E2FSCK_PATH[] = "/system/bin/e2fsck";
 static char MKEXT4FS_PATH[] = "/system/bin/make_ext4fs";
+static char MKE2FS_PATH[] = "/system/bin/mke2fs";
 
 int Ext4::doMount(const char *fsPath, const char *mountPoint, bool ro, bool remount,
         bool executable, bool sdcard) {
@@ -128,10 +128,17 @@ int Ext4::format(const char *fsPath, const char *mountpoint) {
     int rc;
     int status;
 
-    args[0] = MKEXT4FS_PATH;
-    args[1] = "-J";
-    args[2] = "-a";
-    args[3] = mountpoint;
+    if (mountpoint == NULL) {
+        args[0] = MKE2FS_PATH;
+        args[1] = "-j";
+        args[2] = "-T";
+        args[3] = "ext4";
+    } else {
+        args[0] = MKEXT4FS_PATH;
+        args[1] = "-J";
+        args[2] = "-a";
+        args[3] = mountpoint;
+    }
     args[4] = fsPath;
     rc = android_fork_execvp(ARRAY_SIZE(args), (char **)args, &status, false,
             true);
