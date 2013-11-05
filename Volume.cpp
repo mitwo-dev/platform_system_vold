@@ -457,8 +457,8 @@ int Volume::mountVol() {
                     return -1;
                 }
 
-                if (Fat::doMount(devicePath, getMountpoint(), false, false, false,
-                            AID_MEDIA_RW, AID_MEDIA_RW, 0007, true)) {
+                if (Fat::doMount(devicePath, getFuseMountpoint(), false, false, false,
+                            AID_SDCARD_RW, AID_SDCARD_RW, 0007, true)) {
                     SLOGE("%s failed to mount via VFAT (%s)\n", devicePath, strerror(errno));
                     continue;
                 }
@@ -476,15 +476,15 @@ int Volume::mountVol() {
                     return -1;
                 }
 
-                if (Ext4::doMount(devicePath, "/mnt/secure/staging", false, false, false)) {
+                if (Ext4::doMount(devicePath, getFuseMountpoint(), false, false, false)) {
                     SLOGE("%s failed to mount via EXT4 (%s)\n", devicePath, strerror(errno));
                     continue;
                 }
 
             } else if (strcmp(fstype, "ntfs") == 0) {
 
-                if (Ntfs::doMount(devicePath, getMountpoint(), false, false, false,
-                            AID_MEDIA_RW, AID_MEDIA_RW, 0007, true)) {
+                if (Ntfs::doMount(devicePath, getFuseMountpoint(), false, false, false,
+                            AID_SDCARD_RW, AID_SDCARD_RW, 0007, true)) {
                     SLOGE("%s failed to mount via NTFS (%s)\n", devicePath, strerror(errno));
                     continue;
                 }
@@ -500,8 +500,8 @@ int Volume::mountVol() {
                     return -1;
                 }
 
-                if (Exfat::doMount(devicePath, "/mnt/secure/staging", false, false, false,
-                        AID_SYSTEM, gid, 0702)) {
+                if (Exfat::doMount(devicePath, getFuseMountpoint(), false, false, false,
+                        AID_SDCARD_RW, AID_SDCARD_RW, 0007)) {
                     SLOGE("%s failed to mount via EXFAT (%s)\n", devicePath, strerror(errno));
                     continue;
                 }
@@ -554,13 +554,6 @@ int Volume::mountVol() {
                     SLOGE("Failed to create %s (%s)", fuseSrc, strerror(errno));
                     failed = true;
                 }
-            }
-
-            // Move subtree to fuse dir
-            if (!failed && doMoveMount("/mnt/secure/staging", fuseSrc, false)) {
-                SLOGE("Failed to move mount (%s)", strerror(errno));
-                umount("/mnt/secure/staging");
-                failed = true;
             }
 
             // Set owner and group on fuse dir
