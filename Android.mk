@@ -46,14 +46,6 @@ common_static_libraries := \
 
 include $(CLEAR_VARS)
 
-ifneq ($(TARGET_FUSE_SDCARD_UID),)
-LOCAL_CFLAGS += -DFUSE_SDCARD_UID=$(TARGET_FUSE_SDCARD_UID)
-endif
-
-ifneq ($(TARGET_FUSE_SDCARD_GID),)
-LOCAL_CFLAGS += -DFUSE_SDCARD_GID=$(TARGET_FUSE_SDCARD_GID)
-endif
-
 LOCAL_MODULE := libvold
 
 LOCAL_SRC_FILES := $(common_src_files)

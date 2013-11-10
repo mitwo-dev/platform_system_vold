@@ -47,7 +47,6 @@ public:
     static const char *ASECDIR;
 
     static const char *LOOPDIR;
-    static const char *FUSEDIR;
 
 protected:
     char *mLabel;
